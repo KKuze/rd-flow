@@ -1,0 +1,26 @@
+{
+  "name": "rd-flow",
+  "version": "0.1.0",
+  "description": "Refinement-Driven Flow: a formal-spec-driven workflow scaffold (TLA+ -> check -> Dafny -> prove -> implement) inspired by cc-sdd.",
+  "type": "module",
+  "bin": {
+    "rd-flow": "bin/rd-flow.js"
+  },
+  "main": "src/cli.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "bin",
+    "src",
+    "skills",
+    "templates",
+    "rules",
+    "docs"
+  ],
+  "scripts": {
+    "start": "node bin/rd-flow.js",
+    "smoke": "node scripts/smoke.js"
+  },
+  "license": "MIT"
+}
