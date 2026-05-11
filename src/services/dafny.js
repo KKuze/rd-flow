@@ -6,6 +6,7 @@ import { specPaths } from './paths.js';
 import { writeRendered } from './templates.js';
 import { ensureDir, exists, writeFileSafe } from '../utils/fs.js';
 import { updateManifest } from './status.js';
+import { resolveTool } from './tools.js';
 
 export function scaffold(projectRoot, name) {
   const p = specPaths(projectRoot, name);
@@ -29,7 +30,7 @@ export function runVerify(projectRoot, name) {
     throw new Error(`Dafny spec not scaffolded — run \`rd-flow dafny scaffold ${name}\``);
   }
 
-  const result = invokeDafny(p.dafny.spec);
+  const result = invokeDafny(projectRoot, p.dafny.spec);
   const stamp = new Date().toISOString();
   const status = result.ok ? 'verified' : (result.skipped ? 'skipped' : 'failed');
   const summary = result.summary;
@@ -53,18 +54,19 @@ export function runVerify(projectRoot, name) {
   return { status, summary, report: p.dafny.report };
 }
 
-function invokeDafny(specPath) {
-  const probe = spawnSync('dafny', ['--version'], { encoding: 'utf8' });
+function invokeDafny(projectRoot, specPath) {
+  const dafny = resolveTool(projectRoot, 'dafny');
+  const probe = spawnSync(dafny, ['--version'], { encoding: 'utf8' });
   if (probe.error && probe.error.code === 'ENOENT') {
     return {
       ok: false,
       skipped: true,
-      summary: 'dafny CLI not found on PATH — stub recorded',
+      summary: 'dafny not found — run `rd-flow tools install --tool dafny`',
       stdout: '',
-      stderr: 'install Dafny to run real verification',
+      stderr: 'Dafny not installed',
     };
   }
-  const run = spawnSync('dafny', ['verify', specPath], { encoding: 'utf8', timeout: 60_000 });
+  const run = spawnSync(dafny, ['verify', specPath], { encoding: 'utf8', timeout: 120_000 });
   return {
     ok: run.status === 0,
     skipped: false,
