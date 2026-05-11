@@ -9,6 +9,7 @@ import * as workflow from './services/workflow.js';
 import * as tla from './services/tla.js';
 import * as dafny from './services/dafny.js';
 import * as impl from './services/implementation.js';
+import * as tools from './services/tools.js';
 import { info, error } from './utils/log.js';
 
 const HELP = `rd-flow — refinement-driven workflow scaffold
@@ -24,6 +25,11 @@ Usage:
   rd-flow dafny verify <name>
   rd-flow impl scaffold <name>
   rd-flow advance <name> <phase>
+  rd-flow tools install   [--tool tla|dafny|all] [--force]
+                          [--tla-version <v>] [--dafny-version <v>]
+                          [--dafny-platform <id>]
+  rd-flow tools uninstall [--tool tla|dafny|all]
+  rd-flow tools status
   rd-flow help
 
 Phases: discovery | requirements | tla-model | tla-check |
@@ -105,6 +111,33 @@ export async function run(argv) {
         return;
       }
       throw new Error(`unknown subcommand: impl ${sub}`);
+    }
+    case 'tools': {
+      if (sub === 'install') {
+        const opts = parseFlags(rest);
+        const result = await tools.install(cwd, {
+          tool: typeof opts.tool === 'string' ? opts.tool : 'all',
+          force: !!opts.force,
+          tlaVersion: typeof opts['tla-version'] === 'string' ? opts['tla-version'] : undefined,
+          dafnyVersion: typeof opts['dafny-version'] === 'string' ? opts['dafny-version'] : undefined,
+          dafnyPlatform: typeof opts['dafny-platform'] === 'string' ? opts['dafny-platform'] : undefined,
+        });
+        process.stdout.write(JSON.stringify(result, null, 2) + '\n');
+        return;
+      }
+      if (sub === 'uninstall') {
+        const opts = parseFlags(rest);
+        const result = tools.uninstall(cwd, {
+          tool: typeof opts.tool === 'string' ? opts.tool : 'all',
+        });
+        process.stdout.write(JSON.stringify(result, null, 2) + '\n');
+        return;
+      }
+      if (sub === 'status') {
+        process.stdout.write(JSON.stringify(tools.status(cwd), null, 2) + '\n');
+        return;
+      }
+      throw new Error(`unknown subcommand: tools ${sub}`);
     }
     case 'advance': {
       const [name, phase] = [sub, rest[0]];

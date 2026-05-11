@@ -10,6 +10,7 @@ import { specPaths } from './paths.js';
 import { writeRendered } from './templates.js';
 import { ensureDir, exists, writeFileSafe } from '../utils/fs.js';
 import { updateManifest } from './status.js';
+import { resolveTool } from './tools.js';
 
 export function scaffold(projectRoot, name) {
   const p = specPaths(projectRoot, name);
@@ -34,7 +35,7 @@ export function runCheck(projectRoot, name) {
     throw new Error(`TLA+ model not scaffolded — run \`rd-flow tla scaffold ${name}\``);
   }
 
-  const result = invokeTLC(p.tla.model, p.tla.cfg);
+  const result = invokeTLC(projectRoot, p.tla.model, p.tla.cfg);
   const stamp = new Date().toISOString();
   const status = result.ok ? 'passed' : (result.skipped ? 'skipped' : 'failed');
   const summary = result.summary;
@@ -58,30 +59,26 @@ export function runCheck(projectRoot, name) {
   return { status, summary, report: p.tla.report };
 }
 
-function invokeTLC(modelPath, cfgPath) {
-  // Probe for tlc / tla2tools first.
-  const tools = [
-    { cmd: 'tlc', args: ['-config', cfgPath, modelPath] },
-    { cmd: 'tlapm', args: [modelPath] }, // proof manager fallback (will likely not match TLC behaviour but proves the binary is present)
-  ];
-  for (const tool of tools) {
-    const probe = spawnSync(tool.cmd, ['-h'], { encoding: 'utf8' });
-    if (probe.error && probe.error.code === 'ENOENT') continue;
-    const run = spawnSync(tool.cmd, tool.args, { encoding: 'utf8', timeout: 60_000 });
+function invokeTLC(projectRoot, modelPath, cfgPath) {
+  // Prefer the project-local install at .formal/tools/bin/tlc; fall back to PATH.
+  const tlc = resolveTool(projectRoot, 'tlc');
+  const probe = spawnSync(tlc, ['-h'], { encoding: 'utf8' });
+  if (probe.error && probe.error.code === 'ENOENT') {
     return {
-      ok: run.status === 0,
-      skipped: false,
-      summary: run.status === 0 ? `${tool.cmd} reported success` : `${tool.cmd} exited with status ${run.status}`,
-      stdout: run.stdout || '',
-      stderr: run.stderr || '',
+      ok: false,
+      skipped: true,
+      summary: 'tlc not found — run `rd-flow tools install --tool tla`',
+      stdout: '',
+      stderr: 'TLA+ tools not installed',
     };
   }
+  const run = spawnSync(tlc, ['-config', cfgPath, modelPath], { encoding: 'utf8', timeout: 120_000 });
   return {
-    ok: false,
-    skipped: true,
-    summary: 'TLA+ tooling (tlc/tlapm) not found on PATH — stub recorded',
-    stdout: '',
-    stderr: 'tlc/tlapm not installed; install TLA+ tools to run real checks',
+    ok: run.status === 0,
+    skipped: false,
+    summary: run.status === 0 ? 'tlc reported success' : `tlc exited with status ${run.status}`,
+    stdout: run.stdout || '',
+    stderr: run.stderr || '',
   };
 }
 

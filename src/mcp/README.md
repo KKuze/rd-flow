@@ -18,6 +18,9 @@ Planned tools (1:1 with the existing service functions):
 | `dafny.scaffold`          | `services/dafny.scaffold`              |
 | `dafny.verify`            | `services/dafny.runVerify`             |
 | `implementation.scaffold` | `services/implementation.scaffold`     |
+| `tools.install`           | `services/tools.install`               |
+| `tools.uninstall`         | `services/tools.uninstall`             |
+| `tools.status`            | `services/tools.status`                |
 | `artifact.validateLinks`  | (not yet implemented)                  |
 
 See `docs/mcp-boundaries.md` for the rationale.
