@@ -23,6 +23,7 @@ Usage:
   rd-flow tla check <name>
   rd-flow dafny scaffold <name>
   rd-flow dafny verify <name>
+  rd-flow dafny build <name> --target cs|java|go|js|py|cpp|rs
   rd-flow impl scaffold <name>
   rd-flow advance <name> <phase>
   rd-flow tools install   [--tool tla|dafny|all] [--force]
@@ -33,7 +34,7 @@ Usage:
   rd-flow help
 
 Phases: discovery | requirements | tla-model | tla-check |
-        dafny-refine | dafny-prove | implement | validate
+        dafny-refine | dafny-prove | dafny-build | implement | validate
 `;
 
 export async function run(argv) {
@@ -99,6 +100,16 @@ export async function run(argv) {
         ensureName(rest[0], 'dafny verify');
         const r = dafny.runVerify(cwd, rest[0]);
         info(`Dafny verify status: ${r.status} — see ${path.relative(cwd, r.report)}`);
+        return;
+      }
+      if (sub === 'build') {
+        const [name, ...flagArgs] = rest;
+        ensureName(name, 'dafny build');
+        const opts = parseFlags(flagArgs);
+        const target = typeof opts.target === 'string' ? opts.target : undefined;
+        const r = dafny.runBuild(cwd, name, { target });
+        info(`Dafny build status: ${r.status} — see ${path.relative(cwd, r.report)}`);
+        if (r.outDir) info(`output: ${path.relative(cwd, r.outDir)}`);
         return;
       }
       throw new Error(`unknown subcommand: dafny ${sub}`);

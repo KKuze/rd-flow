@@ -7,6 +7,7 @@ artifacts:
   tla_check: pending
   dafny_spec: pending
   dafny_proof: pending
+  dafny_build: pending
   implementation_plan: pending
 checks:
   tla:
@@ -17,5 +18,10 @@ checks:
     status: pending
     last_run: null
     summary: ""
+  dafny_build:
+    status: pending
+    last_run: null
+    summary: ""
+    target: null
 blockers: []
 next_action: "Fill in requirements.md, then run `rd-flow tla scaffold`."

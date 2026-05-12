@@ -21,7 +21,8 @@
   "scripts": {
     "start": "node bin/rd-flow.js",
     "smoke": "node scripts/smoke.js",
-    "smoke:tools": "node scripts/smoke-tools.js"
+    "smoke:tools": "node scripts/smoke-tools.js",
+    "smoke:build": "node scripts/smoke-build.js"
   },
   "license": "MIT"
 }

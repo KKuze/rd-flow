@@ -18,11 +18,13 @@ description: Run Dafny verification on an rd-flow spec and iterate until proofs 
    rd-flow dafny verify <name>
    ```
 3. Read `dafny/proof-report.md`:
-   - `verified` → advance to `implement`.
+   - `verified` → advance to `dafny-build` (optional) or skip to
+     `implement`.
    - `skipped` (no tooling) → block and request Dafny install.
    - `failed` → add lemmas / strengthen `ensures` / split methods. Avoid
      `assume`/`{:axiom}` unless documented in `refinement.md`.
 
 ## Handoff
 
-On verify, invoke `implement`.
+On `verified`, invoke `dafny-build` if you want emitted code for the
+implementation, or `implement` directly if hand-translating.

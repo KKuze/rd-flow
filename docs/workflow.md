@@ -31,18 +31,25 @@ Produces a spec workspace with `brief.md`, `requirements.md`,
 
 ## 3. Work the phases
 
-| Phase          | Skill          | CLI                                    |
-| -------------- | -------------- | -------------------------------------- |
-| requirements   | `requirements` | (edit `requirements.md`)               |
-| tla-model      | `tla-model`    | `rd-flow tla scaffold <name>`          |
-| tla-check      | `tla-check`    | `rd-flow tla check <name>`             |
-| dafny-refine   | `dafny-refine` | `rd-flow dafny scaffold <name>`        |
-| dafny-prove    | `dafny-prove`  | `rd-flow dafny verify <name>`          |
-| implement      | `implement`    | `rd-flow impl scaffold <name>`         |
-| validate       | `validate`     | `rd-flow advance <name> validate`      |
+| Phase          | Skill          | CLI                                              |
+| -------------- | -------------- | ------------------------------------------------ |
+| requirements   | `requirements` | (edit `requirements.md`)                         |
+| tla-model      | `tla-model`    | `rd-flow tla scaffold <name>`                    |
+| tla-check      | `tla-check`    | `rd-flow tla check <name>`                       |
+| dafny-refine   | `dafny-refine` | `rd-flow dafny scaffold <name>`                  |
+| dafny-prove    | `dafny-prove`  | `rd-flow dafny verify <name>`                    |
+| dafny-build\*  | `dafny-build`  | `rd-flow dafny build <name> --target <lang>`     |
+| implement      | `implement`    | `rd-flow impl scaffold <name>`                   |
+| validate       | `validate`     | `rd-flow advance <name> validate`                |
 
-Each `tla check` / `dafny verify` updates `manifest.yaml` and
-regenerates `status.md`.
+\* `dafny-build` is **optional**. Targets: `cs | java | go | js | py | cpp | rs`.
+Skip with `rd-flow advance <name> implement` if hand-translating from the
+Dafny spec. The emitted artefacts land under
+`.formal/specs/<name>/dafny/out/<target>/` and a `build-report.md` is
+written alongside the proof report.
+
+Each `tla check` / `dafny verify` / `dafny build` updates `manifest.yaml`
+and regenerates `status.md`.
 
 ## 4. Resume
 
