@@ -19,6 +19,7 @@ export const PHASES = [
   'tla-check',
   'dafny-refine',
   'dafny-prove',
+  'dafny-build',
   'implement',
   'validate',
 ];
@@ -36,11 +37,13 @@ export function initialManifest(name) {
       tla_check: 'pending',
       dafny_spec: 'pending',
       dafny_proof: 'pending',
+      dafny_build: 'pending',
       implementation_plan: 'pending',
     },
     checks: {
       tla: { status: 'pending', last_run: null, summary: '' },
       dafny: { status: 'pending', last_run: null, summary: '' },
+      dafny_build: { status: 'pending', last_run: null, summary: '', target: null },
     },
     blockers: [],
     next_action: 'Fill in requirements.md, then run `rd-flow tla scaffold`.',
@@ -88,6 +91,11 @@ function renderStatusMd(projectRoot, name, m) {
   if (m.checks.tla.summary) lines.push(`  - ${m.checks.tla.summary}`);
   lines.push(`- Dafny: ${m.checks.dafny.status}` + (m.checks.dafny.last_run ? ` (last: ${m.checks.dafny.last_run})` : ''));
   if (m.checks.dafny.summary) lines.push(`  - ${m.checks.dafny.summary}`);
+  if (m.checks.dafny_build) {
+    const target = m.checks.dafny_build.target ? ` [${m.checks.dafny_build.target}]` : '';
+    lines.push(`- Dafny build${target}: ${m.checks.dafny_build.status}` + (m.checks.dafny_build.last_run ? ` (last: ${m.checks.dafny_build.last_run})` : ''));
+    if (m.checks.dafny_build.summary) lines.push(`  - ${m.checks.dafny_build.summary}`);
+  }
   lines.push('');
   lines.push('## Blockers');
   if (!m.blockers.length) lines.push('- (none)');

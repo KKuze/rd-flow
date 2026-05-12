@@ -51,6 +51,9 @@ export function specPaths(projectRoot, name) {
       spec: path.join(root, 'dafny', 'spec.dfy'),
       refinement: path.join(root, 'dafny', 'refinement.md'),
       report: path.join(root, 'dafny', 'proof-report.md'),
+      buildReport: path.join(root, 'dafny', 'build-report.md'),
+      outDir: path.join(root, 'dafny', 'out'),
+      outForTarget: (target) => path.join(root, 'dafny', 'out', target),
     },
     implementation: {
       dir: path.join(root, 'implementation'),

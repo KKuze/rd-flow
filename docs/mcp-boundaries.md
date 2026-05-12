@@ -26,6 +26,7 @@ service module already obeys these rules:
 | `tla.check`               | `services/tla.runCheck`                 | Spawns `tlc`; degrades to `skipped` if absent. |
 | `dafny.scaffold`          | `services/dafny.scaffold`               |  |
 | `dafny.verify`            | `services/dafny.runVerify`              | Same degradation pattern. |
+| `dafny.build`             | `services/dafny.runBuild`               | Target must be one of `cs|java|go|js|py|cpp|rs`. |
 | `implementation.scaffold` | `services/implementation.scaffold`      |  |
 | `artifact.validateLinks`  | (not yet — would walk `mapping.md`)     | TODO once `implement` is heavily used. |
 

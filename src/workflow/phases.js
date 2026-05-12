@@ -9,6 +9,7 @@ export const PHASE_ORDER = [
   'tla-check',
   'dafny-refine',
   'dafny-prove',
+  'dafny-build',
   'implement',
   'validate',
 ];

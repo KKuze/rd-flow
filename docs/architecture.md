@@ -7,7 +7,7 @@ discovery → requirements → tla-model → tla-check
                                    ↓
                             dafny-refine → dafny-prove
                                                     ↓
-                                         implement → validate
+                              dafny-build (optional) → implement → validate
 ```
 
 Each phase produces a small, auditable artefact. The pipeline's value is

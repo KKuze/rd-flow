@@ -35,6 +35,8 @@ rd-flow tla check my-feature
 rd-flow dafny scaffold my-feature
 # edit .formal/specs/my-feature/dafny/spec.dfy
 rd-flow dafny verify my-feature
+# optional: emit code in the target language
+rd-flow dafny build my-feature --target py
 rd-flow impl scaffold my-feature
 rd-flow status my-feature
 ```
