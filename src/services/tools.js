@@ -365,12 +365,18 @@ function hasBinary(name) {
   return true;
 }
 
+// Suffixes are pinned to the default Dafny version (currently 4.9.1).
+// Upstream changes its OS suffix on every minor release — e.g. v4.10
+// keeps `-macos-11` / `-ubuntu-20.04`, but v4.11 bumped to `-macos-13`
+// / `-ubuntu-22.04`. When changing DEFAULT_DAFNY_VERSION, re-check the
+// release assets and update these in lockstep, or expect users to pass
+// `--dafny-platform`.
 function dafnyPlatformId() {
   const arch = process.arch;
   const platform = process.platform;
   if (platform === 'darwin') {
-    if (arch === 'arm64') return 'arm64-macos';
-    if (arch === 'x64') return 'x64-macos';
+    if (arch === 'arm64') return 'arm64-macos-11';
+    if (arch === 'x64') return 'x64-macos-11';
   }
   if (platform === 'linux' && arch === 'x64') return 'x64-ubuntu-20.04';
   throw new Error(`unsupported platform for Dafny binary: ${platform}/${arch} (override via --dafny-platform=...)`);
