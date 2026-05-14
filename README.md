@@ -1,7 +1,7 @@
 # rd-flow
 
 **Refinement-Driven Flow** — a minimum scaffold for formal-spec-driven
-feature work, inspired by `cc-sdd` but oriented around
+feature work, oriented around
 *TLA+ → check → Dafny → prove → implement* rather than design/tasks docs.
 
 This is an extensible **prototype**, not a finished product. The goal is
