@@ -13,7 +13,7 @@
 //   - Performance optimisations.
 //   - I/O, networking, persistence — those belong in the implementation.
 
-module {{spec_name}} {
+module {{module_name}} {
 
   // datatype State = State(/* fields */)
 

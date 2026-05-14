@@ -11,6 +11,7 @@ import { writeRendered } from './templates.js';
 import { ensureDir, exists, writeFileSafe } from '../utils/fs.js';
 import { updateManifest } from './status.js';
 import { resolveTool } from './tools.js';
+import { toModuleName } from '../utils/names.js';
 
 export function scaffold(projectRoot, name) {
   const p = specPaths(projectRoot, name);
@@ -103,9 +104,3 @@ function renderReport({ name, status, summary, stamp, stdout, stderr }) {
   ].join('\n');
 }
 
-function toModuleName(name) {
-  return name
-    .split(/[-_]/)
-    .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
-    .join('');
-}

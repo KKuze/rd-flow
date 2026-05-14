@@ -9,6 +9,7 @@ import { writeRendered } from './templates.js';
 import { ensureDir, exists, writeFileSafe } from '../utils/fs.js';
 import { updateManifest } from './status.js';
 import { resolveTool } from './tools.js';
+import { toModuleName } from '../utils/names.js';
 
 // Targets accepted by `dafny build -t:<target>`. Kept explicit so the CLI
 // can fail fast on typos before spawning dafny.
@@ -26,7 +27,7 @@ function assertTarget(target) {
 export function scaffold(projectRoot, name) {
   const p = specPaths(projectRoot, name);
   ensureDir(p.dafny.dir);
-  const vars = { spec_name: name };
+  const vars = { spec_name: name, module_name: toModuleName(name) };
   writeRendered(p.dafny.spec, 'dafny/spec.dfy', vars);
   writeRendered(p.dafny.refinement, 'dafny/refinement.md', vars);
   writeRendered(p.dafny.report, 'dafny/proof-report.md', { ...vars, last_run: '(never)', status: 'pending', output: '(not yet executed)' });
